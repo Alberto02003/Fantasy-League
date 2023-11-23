@@ -2,6 +2,7 @@ package com.example.fantasy_league
 
 import android.graphics.drawable.shapes.Shape
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -16,88 +17,100 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Blue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.fantasy_league.Objetos.jugador
 import com.example.fantasy_league.ui.theme.FantasyLeagueTheme
 
 class MainActivity : ComponentActivity() {
+
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val ctx = LocalContext.current
             FantasyLeagueTheme {
                 Column {
+                    Text(text = "Bienvenido a tu Fantasy")
+                    var query by remember { mutableStateOf("") }
+                    var active by remember { mutableStateOf(false) }
+                    SearchBar(
+                        query = query,
+                        onQueryChange = {query = it},
+                        onSearch = {
+                            Toast.makeText(ctx, query, Toast.LENGTH_SHORT).show()
+                            active = false
+                        },
+                        active = active,
+                        onActiveChange ={active = it},
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        //LazyColumn(content = )
+                    }
                     Row {
-                        Text(text = "Bienvenido a tu Fantasy")
-                    }
-                    Card (colors = CardDefaults.cardColors(
-                        containerColor = Color.Gray,
-                    ), modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 10.dp)) {
-                        Row  {
-                            Column {
-                                Image(painter = painterResource(id = R.drawable.cris) , contentDescription ="" , modifier = Modifier.size(150.dp))
-                            }
-                            Column (verticalArrangement = Arrangement.SpaceBetween, horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()){
-                                Text(text = "Cristiano Ronaldo")
-                                Text(text = "vs Getafe 2017")
-                                Text(text = "4 goles")
+                        Column (verticalArrangement = Arrangement.Bottom){
+                            Button(onClick = {
+
+                            }) {
+                                Text(text = "Add")
+                                Icon(painter = painterResource(id = R.drawable.anadir), modifier = Modifier
+                                    .size(30.dp)
+                                    .padding(horizontal = 5.dp), contentDescription ="" )
                             }
                         }
-                    }
-                    Card (colors = CardDefaults.cardColors(
-                        containerColor = Color.Red,
-                    ), modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 10.dp)) {
-                        Row  {
-                            Column {
-                                Image(painter = painterResource(id = R.drawable.messi) , contentDescription ="" , modifier = Modifier.size(150.dp))
-                            }
-                            Column (verticalArrangement = Arrangement.SpaceBetween, horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()){
-                                Text(text = "Messi")
-                                Text(text = "vs Real Madrid")
-                                Text(text = "4 goles en propia")
+                            Button(onClick = {
+                            }) {
+                                Text(text = "Delete")
+                                Icon(painter = painterResource(id = R.drawable.eliminar), modifier = Modifier
+                                    .size(30.dp)
+                                    .padding(horizontal = 5.dp), contentDescription ="" )
                             }
                         }
-                        Row (){
-                            Column {
-                                Button(onClick = {
-
-                                }) {
-                                    Text(text = "Add")
-                                }
-                            }
-                            Column {
-                                Button(onClick = {
-
-                                }) {
-                                    Text(text = "Delete")
-                                }
-                            }
-
-                        }
-                    }
-
-
-
                     }
                 }
+        }
+    }
+}
+
+@Composable
+fun carta(jugador:jugador){
+    Card (colors = CardDefaults.cardColors(
+        containerColor = Color.Gray,
+    ), modifier = Modifier
+        .fillMaxWidth()
+        .padding(top = 10.dp)) {
+        Row  {
+            Column {
+                Image(painter = painterResource(id = R.drawable.cris) , contentDescription ="" , modifier = Modifier.size(150.dp))
+            }
+            Column (verticalArrangement = Arrangement.SpaceBetween, horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()){
+                Text(text = jugador.nombre)
+                Text(text = jugador.equipoEnContra)
+                Text(text = jugador.goles.toString())
+            }
         }
     }
 }
